@@ -1,0 +1,99 @@
+﻿@model HomeModel
+
+@if (ViewBag.Message != null)
+{<p>@ViewBag.Message</p>}
+
+@if (@Model == null)
+{<p>Нет модели</p>}
+
+<h1>Помощник кладовщика 2.0</h1>
+<h3>История перемещений</h3>
+
+<p></p>
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#movement_modal"> Новое перемещение </button>
+<p></p>
+
+@*@if (@Model.movements.Count != 0)
+{
+    <p> Всего перемещений: @Model.movements.Count   </p>
+}*@
+
+<div class="container">
+    <div class="modal fade" id="movement_modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Новое перемещение</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("AddMovement", "Home", FormMethod.Post))
+                    {
+                        <p>Дата перемещения</p>
+                        <input type="datetime" name="date_time">
+                        <p>Откуда</p>
+                        <select name="from_warehouse">
+                            <option selected disabled> Выбирете пункт отправления </option>
+                            @foreach (Warehouse wh in Model.warehouses)
+                            {
+                                <option value="@wh">@wh.name</option>
+                            }
+                        </select>
+                        <p> Куда </p>
+                        <select name="to_warehouse">
+                            <option selected disabled> Выбирете пункт назначения </option>
+                            @foreach (Warehouse wh in Model.warehouses)
+                            {
+                                <option value="@wh">@wh.name</option>
+                            }
+                        </select>
+
+                        <div class="modal-footer">
+
+                            <p><input type="submit" /></p>
+                            @*<button type="button" class="btn btn-default" data-dismiss="modal"> Добавить </button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal"> Отмена </button>*@
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th> Когда </th>
+            <th> Откуда </th>
+            <th> Куда </th>
+        </tr>
+    </thead>
+
+    @if (@Model != null)
+    {
+        <tbody>
+            @for (var i = 0; i < Model.movements.Count; i++)
+            {
+                var movement = Model.movements[i];
+                <tr>
+                    <td>
+                        @movement.date_time
+                    </td>
+                    <td>
+                        @movement.from_warehouse.name
+                    </td>
+                    <td>
+                        @movement.from_warehouse.name
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    }
+</table>
+
+
+
+

@@ -1,0 +1,30 @@
+﻿<div class="container">
+    <div class="modal fade" id="movement_modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Новое перемещение</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("AddMovement", "Home", FormMethod.Post))
+                    {
+                        <p>Дата перемещения</p>
+                        <input type="datetime" name="calendar">
+                        <p>Откуда</p>
+                        //@Html.DropDownListFor(m => m[0].from_warehouse.id, new SelectList(Model.warehouses, "", "");
+                        < p > Куда </ p >
+                        @Html.TextBox("Куда");
+                        <div class="modal-footer">
+
+
+                            <input type="submit" />
+                            @*<button type="button" class="btn btn-default" data-dismiss="modal"> Добавить </button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal"> Отмена </button>*@
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

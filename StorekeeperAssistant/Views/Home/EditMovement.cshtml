@@ -1,0 +1,16 @@
+﻿@model Movement
+
+@using (Html.BeginForm("EditMovement", "Home", FormMethod.Post))
+{
+    <p>Дата перемещения</p>
+    <input type="datetime" name="calendar">
+    <p>Откуда</p>
+    @Html.EditorFor(m => m.from_warehouse.name);
+    <p>Куда</p>
+    @Html.EditorFor(m => m.to_warehouse.name);
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"> Добавить </button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"> Отмена </button>
+    </div>
+}

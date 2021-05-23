@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\Новая папка\**" />
+    <Content Remove="Models\Новая папка\**" />
+    <EmbeddedResource Remove="Models\Новая папка\**" />
+    <None Remove="Models\Новая папка\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="Npgsql" Version="5.0.4" />
+    <PackageReference Include="React.Web.Mvc4" Version="5.2.11" />
+    <PackageReference Include="vue" Version="2.6.11" />
+  </ItemGroup>
+
+</Project>

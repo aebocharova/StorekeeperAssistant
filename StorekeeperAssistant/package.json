@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "Name": "ASP.NET",
+  "private": true,
+  "devDependencies": {
+  },
+  "dependencies": {
+    "vue": "2.6.11"
+  }
+}
