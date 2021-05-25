@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Npgsql;
-using StorekeeperAssistant.Models;
+﻿using Npgsql;
+using System;
 
 namespace StorekeeperAssistant.Controllers.Db
 {
@@ -13,12 +9,12 @@ namespace StorekeeperAssistant.Controllers.Db
 
         public DbInit()
         {
-            
+
         }
 
-        public NpgsqlConnection getConnection() 
-        { 
-            return p_connection; 
+        public NpgsqlConnection getConnection()
+        {
+            return p_connection;
         }
 
         public bool connect()
@@ -33,7 +29,7 @@ namespace StorekeeperAssistant.Controllers.Db
                 p_connection = conn;
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return false;
             }
@@ -101,6 +97,6 @@ namespace StorekeeperAssistant.Controllers.Db
             {
                 cmd.ExecuteNonQuery();
             }
-            }
         }
     }
+}

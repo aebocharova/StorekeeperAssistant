@@ -13,11 +13,6 @@
 <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#movement_modal"> Новое перемещение </button>
 <p></p>
 
-@*@if (@Model.movements.Count != 0)
-{
-    <p> Всего перемещений: @Model.movements.Count   </p>
-}*@
-
 <div class="container">
     <div class="modal fade" id="movement_modal" role="dialog">
         <div class="modal-dialog">
@@ -30,21 +25,21 @@
                     @using (Html.BeginForm("AddMovement", "Home", FormMethod.Post))
                     {
                         <p>Дата перемещения</p>
-                        <input type="datetime" name="date_time">
+                        <input type="date" class="form-control" name="Movement.date_time">
                         <p>Откуда</p>
-                        <select name="from_warehouse">
+                        <select name="Movement.from_warehouse.id">
                             <option selected disabled> Выбирете пункт отправления </option>
-                            @foreach (Warehouse wh in Model.warehouses)
+                            @foreach (Warehouse wh in Model.warehouses.Values.ToList())
                             {
-                                <option value="@wh">@wh.name</option>
+                                <option value="@wh.id">@wh.name</option>
                             }
                         </select>
                         <p> Куда </p>
-                        <select name="to_warehouse">
+                        <select name="Movement.to_warehouse.id">
                             <option selected disabled> Выбирете пункт назначения </option>
-                            @foreach (Warehouse wh in Model.warehouses)
+                            @foreach (Warehouse wh in Model.warehouses.Values.ToList())
                             {
-                                <option value="@wh">@wh.name</option>
+                                <option value="@wh.id">@wh.name</option>
                             }
                         </select>
 
@@ -61,6 +56,10 @@
     </div>
 </div>
 
+@if (Model.movements.Count != 0)
+{
+   <p> Всего перемещений: @Model.movements.Count </p>
+}
 
 <table class="table">
     <thead>
@@ -68,27 +67,33 @@
             <th> Когда </th>
             <th> Откуда </th>
             <th> Куда </th>
+            <th> Операции </th>
         </tr>
     </thead>
 
     @if (@Model != null)
     {
         <tbody>
-            @for (var i = 0; i < Model.movements.Count; i++)
+            @foreach (var movement in Model.movements)
             {
-                var movement = Model.movements[i];
-                <tr>
-                    <td>
-                        @movement.date_time
-                    </td>
-                    <td>
-                        @movement.from_warehouse.name
-                    </td>
-                    <td>
-                        @movement.from_warehouse.name
-                    </td>
+            <tr>
+                <td>
+                    @movement.date_time
+                </td>
+                <td>
+                    @movement.from_warehouse.name
+                </td>
+                <td>
+                    @movement.to_warehouse.name
+                </td>
+                <td>
+                    @Html.ActionLink("Del", "DeleteMovement", @movement.id) 
+                    
+                    
+                    @*<button id="delete_movement" onclick="DeleteMovement(@movement.id)"> <i class="bi bi-trash"></i> </button>*@
+                </td>
 
-                </tr>
+            </tr>
             }
         </tbody>
     }

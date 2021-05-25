@@ -1,5 +1,3 @@
-using System;
-
 namespace StorekeeperAssistant.Models
 {
     public class ErrorViewModel
