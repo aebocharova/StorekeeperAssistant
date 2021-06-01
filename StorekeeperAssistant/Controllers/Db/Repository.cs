@@ -2,6 +2,7 @@
 using StorekeeperAssistant.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace StorekeeperAssistant.Controllers.Db
 {
@@ -20,6 +21,20 @@ namespace StorekeeperAssistant.Controllers.Db
             p_connection = connection;
         }
 
+        public Int64 getMovementCount()
+        {
+            p_connection.Open();
+            string sql = "SELECT count(id) FROM movement;";
+
+            NpgsqlCommand cmd = new NpgsqlCommand(sql, p_connection);
+            Int64 count = 0;
+            using (cmd)
+            {
+                count = (Int64)cmd.ExecuteScalar();
+            }
+            p_connection.Close();
+            return count;
+        }
         public Dictionary<int, Warehouse> getWarehouses()
         {
             return p_warehouses;
@@ -34,10 +49,48 @@ namespace StorekeeperAssistant.Controllers.Db
             return p_movements;
         }
 
+        public Movement getMovementById(int id)
+        {
+            Movement movement = new Movement();
+            foreach (var m in p_movements)
+            {
+                if(m.id == id)
+                {
+                    movement = m;
+                    break;
+                }
+            }
+            return movement;
+        }
+        public bool UpdateMovement(Movement movement)
+        {
+            p_connection.Open();
+            String sql = "UPDATE movement " +
+                "SET date_time = @date_time, " +
+                "from_warehouse_id = @from_warehouse_id, " +
+                "to_warehouse_id = @to_warehouse_id" +
+                "WHERE id = @id)";
+
+            NpgsqlCommand cmd = new NpgsqlCommand(sql, p_connection);
+            using (cmd)
+            {
+                cmd.Parameters.AddWithValue("date_time", movement.date_time);
+                cmd.Parameters.AddWithValue("from_warehouse_id", movement.from_warehouse.id);
+                cmd.Parameters.AddWithValue("to_warehouse_id", movement.to_warehouse.id);
+                cmd.Parameters.AddWithValue("id", movement.id);
+                cmd.ExecuteNonQuery();
+            }
+            p_connection.Close();
+            return true;
+        }
+
         public bool AddMovement(Movement movement)
         {
-            String sql = "INSERT INTO movement(date_time, from_warehouse_id, to_warehouse_id)" +
-                "VALUES (@date_time, @from_warehouse_id, @to_warehouse_id)";
+            p_connection.Open();
+            String sql = "BEGIN; " +
+                "INSERT INTO movement(date_time, from_warehouse_id, to_warehouse_id)" +
+                "VALUES (@date_time, @from_warehouse_id, @to_warehouse_id); " +
+                "COMMIT;";
 
             NpgsqlCommand cmd = new NpgsqlCommand(sql, p_connection);
             using (cmd)
@@ -68,14 +121,17 @@ namespace StorekeeperAssistant.Controllers.Db
             if (id == 0)
                 return false;
 
+            p_connection.Close();
             movement.id = id;
             p_movements.Add(movement);
+
 
             return true;
         }
 
         public bool RemoveMovement(Movement movement)
         {
+            p_connection.Open();
             String sql = "DELETE FROM movement WHERE id = @id;";
 
             NpgsqlCommand cmd = new NpgsqlCommand(sql, p_connection);
@@ -84,13 +140,15 @@ namespace StorekeeperAssistant.Controllers.Db
                 cmd.Parameters.AddWithValue("id", movement.id);
                 cmd.ExecuteNonQuery();
             }
-
+            p_connection.Close();
             p_movements.Remove(movement);
             return true;
         }
 
         public bool refresh()
         {
+            if(p_connection.State != ConnectionState.Open) 
+                p_connection.Open();
             if (p_movements != null) p_movements.Clear();
             if (p_warehouses != null) p_warehouses.Clear();
             if (p_nomenclature != null) p_nomenclature.Clear();
@@ -158,6 +216,7 @@ namespace StorekeeperAssistant.Controllers.Db
                     }
                 }
             }
+            p_connection.Close();
 
             return true;
         }

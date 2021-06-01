@@ -1,16 +1,29 @@
-﻿@model Movement
+﻿@model HomeModel
 
 @using (Html.BeginForm("EditMovement", "Home", FormMethod.Post))
 {
     <p>Дата перемещения</p>
     <input type="datetime" name="calendar">
     <p>Откуда</p>
-    @Html.EditorFor(m => m.from_warehouse.name);
-    <p>Куда</p>
-    @Html.EditorFor(m => m.to_warehouse.name);
+    <select name="Movement.from_warehouse.id">
+        <option selected disabled> Выбирете пункт отправления </option>
+        @foreach (Warehouse wh in Model.warehouses.Values.ToList())
+        {
+            <option value="@wh.id">@wh.name</option>
+        }
+    </select>
+    <p> Куда </p>
+    <select name="Movement.to_warehouse.id">
+        <option selected disabled> Выбирете пункт назначения </option>
+        @foreach (Warehouse wh in Model.warehouses.Values.ToList())
+        {
+            <option value="@wh.id">@wh.name</option>
+        }
+    </select>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal"> Добавить </button>
-        <button type="button" class="btn btn-default" data-dismiss="modal"> Отмена </button>
+        <input type="submit" title="Добавить" value="EditMovement" />
+        @*<button type="button" class="btn btn-default" data-dismiss="modal"> Добавить </button>
+            <button type="button" class="btn btn-default" data-dismiss="modal"> Отмена </button>*@
     </div>
 }

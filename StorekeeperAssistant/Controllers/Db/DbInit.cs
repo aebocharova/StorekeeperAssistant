@@ -40,7 +40,7 @@ namespace StorekeeperAssistant.Controllers.Db
         {
             try
             {
-                p_connection.CloseAsync();
+                p_connection.Close();
                 p_connection = null;
                 return true;
             }

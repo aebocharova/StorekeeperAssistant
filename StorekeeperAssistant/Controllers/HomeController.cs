@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Npgsql;
 using StorekeeperAssistant.Controllers.Db;
 using StorekeeperAssistant.Models;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace StorekeeperAssistant.Controllers
@@ -12,6 +14,24 @@ namespace StorekeeperAssistant.Controllers
         private readonly ILogger<HomeController> _logger;
         private HomeModel p_home_model;
         Repository p_rep;
+
+        private void refresh() 
+        {
+            bool ok = p_rep.refresh();
+
+            if (!ok)
+            {
+                ViewBag.Message = "Проблема обновления модели";
+            }
+
+            p_home_model.movements = p_rep.getMovements();
+            p_home_model.warehouses = p_rep.getWarehouses();
+
+            if (p_home_model.movements.Count == 0)
+            {
+                ViewBag.Message = "Пустая модель";
+            }
+        }
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -23,7 +43,7 @@ namespace StorekeeperAssistant.Controllers
                 ViewBag.Message = "Проблема подключения к БД";
             }
 
-            db_init.init();
+            //db_init.init();
 
             NpgsqlConnection con = db_init.getConnection();
             if (con == null)
@@ -32,28 +52,13 @@ namespace StorekeeperAssistant.Controllers
             }
 
             p_rep = new Repository(con);
-            p_rep.refresh();
             p_home_model = new HomeModel();
-            p_home_model.movements = p_rep.getMovements();
-            p_home_model.warehouses = p_rep.getWarehouses();
+            refresh();
+            db_init.disconnect();
         }
 
         public IActionResult Index()
         {
-            bool ok = p_rep.refresh();
-
-            if (!ok)
-            {
-                ViewBag.Message = "Проблема обновления модели";
-                return View("index");
-            }
-
-            if (p_home_model.movements.Count == 0)
-            {
-                ViewBag.Message = "Пустая модель";
-                return View("index");
-            }
-
             return View("index", p_home_model);
         }
 
@@ -68,17 +73,21 @@ namespace StorekeeperAssistant.Controllers
         {
             Warehouse wh;
             bool ok = p_home_model.warehouses.TryGetValue(movement.from_warehouse.id, out wh);
-            movement.from_warehouse.name = wh.name;
+            
             if (!ok)
             {
                 ViewBag.Message = "Проблема добавления перемещения";
                 return View("index", p_home_model);
             }
+            movement.from_warehouse.name = wh.name;
 
             p_home_model.warehouses.TryGetValue(movement.to_warehouse.id, out wh);
             movement.to_warehouse.name = wh.name;
 
+            Int64 count = p_rep.getMovementCount();
             ok = p_rep.AddMovement(movement);
+            count = p_rep.getMovementCount();
+
             if (!ok)
             {
                 ViewBag.Message = "Проблема добавления перемещения";
@@ -102,19 +111,27 @@ namespace StorekeeperAssistant.Controllers
                 }
             }
 
+            bool ok = p_rep.RemoveMovement(movement);
             p_home_model.movements.Remove(movement);
             return View("index", p_home_model);
         }
 
-        public IActionResult EditMovement()
+        public IActionResult EditMovement(int id)
         {
-            return View("EditMovement", p_home_model.movements[0]);
+            Movement movement = p_rep.getMovementById(id);
+            if (movement != null)
+                return View("EditMovement", movement);
+            else
+            {
+                ViewBag.Message = "Ошибка операции редактирования";
+                return View("index", p_home_model);
+            }
         }
 
         [HttpPost]
         public IActionResult EditMovement(Movement movement)
         {
-            bool ok = p_rep.AddMovement(movement);
+            bool ok = p_rep.UpdateMovement(movement);
             if (!ok)
             {
                 ViewBag.Message = "Проблема добавления перемещения";
