@@ -40,10 +40,13 @@ namespace StorekeeperAssistant.Controllers
             bool ok = db_init.connect();
             if (!ok)
             {
-                ViewBag.Message = "Проблема подключения к БД";
+                db_init.init();
+                ok = db_init.connect();
+                if (!ok)
+                {
+                    ViewBag.Message = "Проблема подключения к БД";
+                }
             }
-
-            //db_init.init();
 
             NpgsqlConnection con = db_init.getConnection();
             if (con == null)
@@ -54,12 +57,14 @@ namespace StorekeeperAssistant.Controllers
             p_rep = new Repository(con);
             p_home_model = new HomeModel();
             refresh();
+            p_home_model.movements = p_rep.getMovements();
+            p_home_model.warehouses = p_rep.getWarehouses();
             db_init.disconnect();
         }
 
         public IActionResult Index()
         {
-            return View("index", p_home_model);
+            return View("Index", p_home_model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -77,7 +82,7 @@ namespace StorekeeperAssistant.Controllers
             if (!ok)
             {
                 ViewBag.Message = "Проблема добавления перемещения";
-                return View("index", p_home_model);
+                return View("Index", p_home_model);
             }
             movement.from_warehouse.name = wh.name;
 
@@ -91,14 +96,25 @@ namespace StorekeeperAssistant.Controllers
             if (!ok)
             {
                 ViewBag.Message = "Проблема добавления перемещения";
-                return View("index", p_home_model);
+                return View("Index", p_home_model);
             }
 
             p_home_model.movements = p_rep.getMovements();
-            return View("index", p_home_model);
+            return View("Index", p_home_model);
         }
 
         [HttpPost]
+        public IActionResult AddWarehouse(Warehouse warehouse)
+        {
+            return View("Index", p_home_model);
+        }
+
+        //public IActionResult AddWarehouse(Warehouse warehouse)
+        //{
+        //    return View("NewWarehouse");
+        //}
+
+        
         public IActionResult DeleteMovement(Movement movement)
         {
             int id = movement.id;
@@ -113,7 +129,7 @@ namespace StorekeeperAssistant.Controllers
 
             bool ok = p_rep.RemoveMovement(movement);
             p_home_model.movements.Remove(movement);
-            return View("index", p_home_model);
+            return View("Index", p_home_model);
         }
 
         public IActionResult EditMovement(int id)
@@ -124,7 +140,7 @@ namespace StorekeeperAssistant.Controllers
             else
             {
                 ViewBag.Message = "Ошибка операции редактирования";
-                return View("index", p_home_model);
+                return View("Index", p_home_model);
             }
         }
 
@@ -137,7 +153,7 @@ namespace StorekeeperAssistant.Controllers
                 ViewBag.Message = "Проблема добавления перемещения";
             }
             p_home_model.movements = p_rep.getMovements();
-            return View("index", p_home_model);
+            return View("Index", p_home_model);
         }
     }
 }

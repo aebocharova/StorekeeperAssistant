@@ -10,7 +10,7 @@
 <h3>История перемещений</h3>
 
 <p></p>
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#movement_modal"> Новое перемещение </button>
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#movement_modal"> Новое перемещение </button>
 <p></p>
 
 <div class="container">
@@ -27,13 +27,18 @@
                         <p>Дата перемещения</p>
                         <input type="date" class="form-control" name="Movement.date_time">
                         <p>Откуда</p>
-                        <select name="Movement.from_warehouse.id">
-                            <option selected disabled> Выбирете пункт отправления </option>
-                            @foreach (Warehouse wh in Model.warehouses.Values.ToList())
-                            {
-                                <option value="@wh.id">@wh.name</option>
-                            }
-                        </select>
+                        <div>
+                            <select name="Movement.from_warehouse.id">
+                                <option selected disabled> Выбирете пункт отправления </option>
+                                @foreach (Warehouse wh in Model.warehouses.Values.ToList())
+                                {
+                                    <option value="@wh.id">@wh.name</option>
+                                }
+                            </select>
+                            <button class="btn btn-info btn-round" id="add_warehouse" onclick="location.href='@Url.Action("AddWarehouse", "Home")" >
+                                +
+                            </button>
+                        </div>
                         <p> Куда </p>
                         <select name="Movement.to_warehouse.id">
                             <option selected disabled> Выбирете пункт назначения </option>
@@ -47,7 +52,7 @@
 
                             <p><input type="submit" value="Добавить перемещение"></p>
                             @*<button type="button" class="btn btn-default" data-dismiss="modal" onclick="AddMovement"> Добавить </button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal"> Отмена </button>*@
+                <button type="button" class="btn btn-default" data-dismiss="modal"> Отмена </button>*@
                         </div>
                     }
                 </div>
@@ -89,7 +94,7 @@
                 <td>
                     <div class="btn-group">
                         <button class="btn" id="delete_movement" onclick="location.href='@Url.Action("DeleteMovement", "Home", @movement)'">
-                            <i class="fa fa-trash"></i> 
+                            <i class="fa fa-trash"></i>
                             DEL
                         </button>
                         <button class="btn" onclick="location.href='@Url.Action("EditMovement", "Home", @movement.id)'">
