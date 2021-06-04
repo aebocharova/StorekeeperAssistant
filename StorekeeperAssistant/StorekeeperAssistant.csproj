@@ -5,13 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\Новая папка\**" />
-    <Content Remove="Models\Новая папка\**" />
-    <EmbeddedResource Remove="Models\Новая папка\**" />
-    <None Remove="Models\Новая папка\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
     <PackageReference Include="Npgsql" Version="5.0.4" />
     <PackageReference Include="React.Web.Mvc4" Version="5.2.11" />

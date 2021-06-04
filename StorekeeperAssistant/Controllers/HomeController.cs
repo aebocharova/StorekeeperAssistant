@@ -104,17 +104,19 @@ namespace StorekeeperAssistant.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddWarehouse(Warehouse warehouse)
+        public IActionResult AddWarehouse(string name)
         {
+            bool ok = p_rep.AddWarehouse(name);
+            if (!ok)
+            {
+                ViewBag.Message = "Не удалось добавить новый склад " + name;
+                return View("Index", p_home_model);
+            }
+
+            p_home_model.warehouses = p_rep.getWarehouses();
             return View("Index", p_home_model);
         }
 
-        //public IActionResult AddWarehouse(Warehouse warehouse)
-        //{
-        //    return View("NewWarehouse");
-        //}
-
-        
         public IActionResult DeleteMovement(Movement movement)
         {
             int id = movement.id;

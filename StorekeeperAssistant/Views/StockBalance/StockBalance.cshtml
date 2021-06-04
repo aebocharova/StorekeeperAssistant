@@ -1,0 +1,44 @@
+﻿@model List<StockBalance>
+
+@if (ViewBag.Message != null)
+{<p>@ViewBag.Message</p>}
+
+@if (@Model == null)
+{<p>Нет модели</p>}
+
+<h1>Помощник кладовщика 2.0</h1>
+<h3>Остатки на внутренних складах</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th> Склад </th>
+            <th> Номенклатура </th>
+            <th> Количество </th>
+        </tr>
+    </thead>
+
+    @if (@Model != null)
+    {
+        <tbody>
+            @foreach (var balance in Model)
+            {
+                <tr>
+                    <td>
+                        @balance.warehouse_name
+                    </td>
+                    <td>
+                        @balance.nomenclature_name
+                    </td>
+                    <td>
+                        @balance.count
+                    </td>
+                </tr>
+            }
+        </tbody>
+    }
+</table>
+
+
+
+

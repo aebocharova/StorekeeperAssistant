@@ -1,5 +1,5 @@
 ﻿@model HomeModel
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 @if (ViewBag.Message != null)
 {<p>@ViewBag.Message</p>}
 
@@ -26,33 +26,60 @@
                     {
                         <p>Дата перемещения</p>
                         <input type="date" class="form-control" name="Movement.date_time">
+                        <p></p>
+
                         <p>Откуда</p>
                         <div>
-                            <select name="Movement.from_warehouse.id">
+                            <select class="custom-select" name="Movement.from_warehouse.id">
                                 <option selected disabled> Выбирете пункт отправления </option>
                                 @foreach (Warehouse wh in Model.warehouses.Values.ToList())
                                 {
                                     <option value="@wh.id">@wh.name</option>
                                 }
                             </select>
-                            <button class="btn btn-info btn-round" id="add_warehouse" onclick="location.href='@Url.Action("AddWarehouse", "Home")" >
-                                +
-                            </button>
                         </div>
+                        <p></p>
+
                         <p> Куда </p>
-                        <select name="Movement.to_warehouse.id">
+                        <select class="custom-select" name="Movement.to_warehouse.id">
                             <option selected disabled> Выбирете пункт назначения </option>
                             @foreach (Warehouse wh in Model.warehouses.Values.ToList())
                             {
                                 <option value="@wh.id">@wh.name</option>
                             }
                         </select>
+                        <p></p>
 
                         <div class="modal-footer">
+                            <button type="submit" class="btn btn-default"> Добавить </button>
+                            <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Home")'"> Отмена </button>
+                        </div>
+                    }
+                </div>
 
-                            <p><input type="submit" value="Добавить перемещение"></p>
-                            @*<button type="button" class="btn btn-default" data-dismiss="modal" onclick="AddMovement"> Добавить </button>
-                <button type="button" class="btn btn-default" data-dismiss="modal"> Отмена </button>*@
+                <button class="btn btn-info btn-round" id="add_warehouse" data-target="#warehouse_modal"> Добавить склад </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="warehouse_modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Новый склад</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    @using (Html.BeginForm("AddWarehouse", "Home", FormMethod.Post))
+                    {
+                        <p>Название</p>
+                        <input type="text" class="form-control" name="Warehouse.name">
+                        <p></p>
+                        <div class="modal-footer">
+                            <p><input type="submit" value="Добавить"></p>
                         </div>
                     }
                 </div>
@@ -63,7 +90,7 @@
 
 @if (Model.movements.Count != 0)
 {
-   <p> Всего перемещений: @Model.movements.Count </p>
+    <p> Всего перемещений: @Model.movements.Count </p>
 }
 
 <table class="table">
@@ -81,31 +108,31 @@
         <tbody>
             @foreach (var movement in Model.movements)
             {
-            <tr>
-                <td>
-                    @movement.date_time
-                </td>
-                <td>
-                    @movement.from_warehouse.name
-                </td>
-                <td>
-                    @movement.to_warehouse.name
-                </td> 
-                <td>
-                    <div class="btn-group">
-                        <button class="btn" id="delete_movement" onclick="location.href='@Url.Action("DeleteMovement", "Home", @movement)'">
-                            <i class="fa fa-trash"></i>
-                            DEL
-                        </button>
-                        <button class="btn" onclick="location.href='@Url.Action("EditMovement", "Home", @movement.id)'">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                            </svg>
-                            UPD
-                        </button>
-                    </div>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        @movement.date_time
+                    </td>
+                    <td>
+                        @movement.from_warehouse.name
+                    </td>
+                    <td>
+                        @movement.to_warehouse.name
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn" id="delete_movement" onclick="location.href='@Url.Action("DeleteMovement", "Home", @movement)'">
+                                <i class="fa fa-trash"></i>
+                                DEL
+                            </button>
+                            @*<button class="btn" onclick="location.href='@Url.Action("EditMovement", "Home", @movement.id)'">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                </svg>
+                                UPD
+                            </button>*@
+                        </div>
+                    </td>
+                </tr>
             }
         </tbody>
     }
