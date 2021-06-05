@@ -73,6 +73,14 @@ namespace StorekeeperAssistant.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public IActionResult getMovementContent(int id)
+        {
+            List<StockBalance> stock_balance_list = new List<StockBalance>();
+            List<MovementContent> movement_content_list = p_rep.getMovementContent(id);
+
+            return View("MovementContent", movement_content_list); ;
+        }
+
         [HttpPost]
         public IActionResult AddMovement(Movement movement)
         {

@@ -80,6 +80,41 @@ namespace StorekeeperAssistant.Controllers.Db
             p_connection.Close();
             return count;
         }
+
+        public List<MovementContent> getMovementContent(int id)
+        {
+            List<MovementContent> movement_content_list = new List<MovementContent>();
+            p_connection.Open();
+            string sql = "SELECT mc.nomenclature_id, n.name, mc.count " +
+                "FROM movement_content mc " +
+                "JOIN nomenclature n on mc.nomenclature_id = n.id " +
+                "WHERE mc.movement_id = @id;";
+
+            NpgsqlCommand cmd = new NpgsqlCommand(sql, p_connection);
+            using (cmd)
+            {
+                cmd.Parameters.AddWithValue("id", id);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        MovementContent movement_content = new MovementContent();
+                        Nomenclature nomenclature = new Nomenclature();
+                        nomenclature.id = (int)reader[0];
+                        nomenclature.name = (string)reader[1];
+
+                        movement_content.movement = getMovementById(id);
+                        movement_content.nomenclature = nomenclature;
+                        movement_content.count = (int)reader[2];
+
+                        movement_content_list.Add(movement_content);
+                    }
+                }
+            }
+            p_connection.Close();
+            return movement_content_list;
+        }
+
         public Dictionary<int, Warehouse> getWarehouses()
         {
             return p_warehouses;

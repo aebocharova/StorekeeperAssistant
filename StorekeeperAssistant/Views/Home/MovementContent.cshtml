@@ -1,0 +1,38 @@
+﻿@model List<MovementContent>
+
+
+<h1>Помощник кладовщика 2.0</h1>
+
+<h3>Содержание перемещения от @Model[0].movement.date_time </h3>
+
+<p> Откуда: @Model[0].movement.from_warehouse.name </p>
+<p> Куда: @Model[0].movement.to_warehouse.name <p>
+
+<p> Всего наименований: @Model.Count </p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th> Название </th>
+            <th> Количество </th>
+        </tr>
+    </thead>
+
+    @if (@Model != null)
+    {
+        <tbody>
+            @foreach (var mc in Model)
+            {
+                <tr>
+                    <td>
+                        @mc.nomenclature.name
+                    </td>
+                    <td>
+                        @mc.count
+                    </td>
+                </tr>
+            }
+        </tbody>
+    }
+</table>
+

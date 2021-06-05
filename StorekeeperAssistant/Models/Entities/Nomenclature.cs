@@ -6,8 +6,8 @@ namespace StorekeeperAssistant.Models
     {
         public Nomenclature()
         {
-            this.id = id;
-            this.name = name;
+            this.id = 0;
+            this.name = "";
         }
         public Nomenclature(int id, string name)
         {
